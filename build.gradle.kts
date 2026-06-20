@@ -33,6 +33,8 @@ repositories {
 }
 
 dependencies {
+    // ---
+
     /**
      * Fetches only the required Fabric API modules to not waste time downloading all of them for each version.
      * @see <a href="https://github.com/FabricMC/fabric">List of Fabric API modules</a>
@@ -47,6 +49,21 @@ dependencies {
 
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     fapi("fabric-lifecycle-events-v1", "fabric-resource-loader-v0", "fabric-content-registries-v0", "fabric-registry-sync-v0")
+
+    // ---
+
+    // Helper function for include + implementation
+    fun DependencyHandlerScope.includeImplementation(
+        notation: String,
+        configure: (ExternalModuleDependency.() -> Unit)? = null
+    ) {
+        val dep = create(notation) as ExternalModuleDependency
+        configure?.invoke(dep)
+        add("implementation", dep)
+        add("include", dep)
+    }
+
+    // ---
 }
 
 loom {
